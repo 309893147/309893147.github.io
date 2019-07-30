@@ -74,7 +74,7 @@
 
 
 
-  <link rel="alternate" href="/atom.xml" title="有数's Blog" type="application/atom+xml" />
+  <link rel="alternate" href="/atom.xml" title="有树's Blog" type="application/atom+xml" />
 
 
 
@@ -91,7 +91,7 @@ Service work">
 <meta property="og:type" content="article">
 <meta property="og:title" content="使用 Service worker 实现加速/离线访问博客">
 <meta property="og:url" content="https://309893147.github.io/2017/06/08/service-worker/index.html">
-<meta property="og:site_name" content="有数's Blog">
+<meta property="og:site_name" content="有树's Blog">
 <meta property="og:description" content="有一个困扰 web 用户多年的难题——丢失网络连接。即使是世界上最好的 web app，如果下载不了它，也是非常糟糕的体验。如今虽然已经有很多种技术去尝试着解决这一问题。而随着离线页面的出现，一些问题已经得到了解决。有一个叫做 APP Cache 的 API 可以提供离线体验，但它的问题比较多。最重要的问题是，仍然没有一个好的统筹机制对资源缓存和自定义的网络请求进行控制。
 Service work">
 <meta property="og:image" content="https://309893147.github.io/images/service-worker-1.png">
@@ -130,7 +130,7 @@ Service work">
 
 <!-- 网页加载条 -->
 <script src="/js/src/pace.min.js"></script>
-  <title> 使用 Service worker 实现加速/离线访问博客 | 有数's Blog </title>
+  <title> 使用 Service worker 实现加速/离线访问博客 | 有树's Blog </title>
 </head>
 
 <body itemscope itemtype="http://schema.org/WebPage" lang="zh-Hans">
@@ -161,7 +161,7 @@ Service work">
   <div class="custom-logo-site-title">
     <a href="/"  class="brand" rel="start">
       <span class="logo-line-before"><i></i></span>
-      <span class="site-title">有数's Blog</span>
+      <span class="site-title">有树's Blog</span>
       <span class="logo-line-after"><i></i></span>
     </a>
   </div>
@@ -594,7 +594,7 @@ for (var L = 0; L < C.length; L++) {
 <p>以上代码会先检测 Service worker 在浏览器中是否可用，可用的话一个 Service worker（/service-worker.js）将被注册，如果这个 Service worker 已经注册过了，浏览器这会忽略以上代码。<br><code>{scope: &#39;/&#39;}</code> 表示 Service worker 作用的范围。<br>需要说明的是 service-worker.js 文件被放在这个域的根目录下，这意味着 service worker 是跟网站同源的。换句话说，这个 service worker 将会获取到这个域下的所有 fetch 事件。<br>如果 service worker 文件注册到 /example/service-worker.js ，那么 service worker 只能收到 /example/ 路径下的 fetch 事件（比如： /example/page1/, /example/page2/）。<br>如果 service worker 文件注册到根目录下 /service-worker.js ，同时 <code>{scope: &#39;/example&#39;}</code> ，那么 service worker 也只能收到 /example/ 路径下的 fetch 事件。</p>
 <p>service-worker.js 文件，我建议是放在网站的跟目录下，scope 不作修改，这样 service worker 拥有最大的使用范围。</p>
 <h2 id="安装-Service-worker"><a href="#安装-Service-worker" class="headerlink" title="安装 Service worker"></a>安装 Service worker</h2><p><img src="/images/service-worker-2.png" alt=""></p>
-<p><a href="https://neveryu.github.io/service-worker.js">我的 service-worker.js</a><br>关于这个 service-worker.js 怎么写，具体可以查看 API ，<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API" target="_blank" rel="external">MDN Service Worker API</a>。</p>
+<p><a href="https://neveryu.github.io/service-worker.js" target="_blank" rel="external">我的 service-worker.js</a><br>关于这个 service-worker.js 怎么写，具体可以查看 API ，<a href="https://developer.mozilla.org/zh-CN/docs/Web/API/Service_Worker_API" target="_blank" rel="external">MDN Service Worker API</a>。</p>
 <p id="div-border-left-red">注意：将 service-worker.js 放到域的根目录下哦，这样 Service worker 才能拥有最大的使用范围。</p>
 
 <p>现在你可以到 chrome://inspect/#service-workers 这里，检查 service worker 是否对你的网站启用了。<br>或者在 chrome://serviceworker-internals/ 中管理你的 Service worker 。<br>或者在浏览器的开发者工具中也可以详细的查看 service worker 的缓存。<br><img src="/images/service-worker-3.png" alt=""></p>
@@ -614,7 +614,7 @@ for (var L = 0; L < C.length; L++) {
       
         
 <div id="wechat_subscriber" style="display: block; padding: 10px 0; margin: 20px auto; width: 100%; text-align: center">
-    <img id="wechat_subscriber_qcode" src="/avatar/avatar.jpg" alt="春有白花,秋有数 wechat" style="width: 200px; max-width: 100%;"/>
+    <img id="wechat_subscriber_qcode" src="/avatar/avatar.jpg" alt="春有百花,秋有树 wechat" style="width: 200px; max-width: 100%;"/>
     <div>扫一扫，用手机访问本站</div>
 </div>
 
@@ -640,13 +640,13 @@ for (var L = 0; L < C.length; L++) {
     <div id="QR" style="display: none;">
       
         <div id="wechat" style="display: inline-block">
-          <img id="wechat_qr" src="/reward/reward_wechat.png" alt="春有白花,秋有数 WeChat Pay"/>
+          <img id="wechat_qr" src="/reward/reward_wechat.png" alt="春有百花,秋有树 WeChat Pay"/>
           <p>微信打赏</p>
         </div>
       
       
         <div id="alipay" style="display: inline-block">
-          <img id="alipay_qr" src="/reward/reward_alipay.png" alt="春有白花,秋有数 Alipay"/>
+          <img id="alipay_qr" src="/reward/reward_alipay.png" alt="春有百花,秋有树 Alipay"/>
           <p>支付宝打赏</p>
         </div>
       
@@ -758,15 +758,15 @@ for (var L = 0; L < C.length; L++) {
       <section class="site-overview sidebar-panel ">
         <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
           <img class="site-author-image" itemprop="image"
-               src="/avatar/avatar.png"
-               alt="春有白花,秋有数" />
-          <p class="site-author-name" itemprop="name">春有白花,秋有数</p>
+               src="/images/avatar.jpg"
+               alt="春有百花,秋有树" />
+          <p class="site-author-name" itemprop="name">春有百花,秋有树</p>
           <p class="site-description motion-element" itemprop="description"></p>
         </div>
         <nav class="site-state motion-element">
           <div class="site-state-item site-state-posts">
             <a href="/archives">
-              <span class="site-state-item-count">33</span>
+              <span class="site-state-item-count">34</span>
               <span class="site-state-item-name">日志</span>
             </a>
           </div>
@@ -804,20 +804,11 @@ for (var L = 0; L < C.length; L++) {
           
             
               <span class="links-of-author-item">
-                <a href="https://github.com/Neveryu" target="_blank" title="Github">
+                <a href="https://github.com/309893147" target="_blank" title="Github">
                   
                     <i class="fa fa-fw fa-github"></i>
                   
                   Github
-                </a>
-              </span>
-            
-              <span class="links-of-author-item">
-                <a href="http://weibo.com/Neveryu" target="_blank" title="Weibo">
-                  
-                    <i class="fa fa-fw fa-weibo"></i>
-                  
-                  Weibo
                 </a>
               </span>
             
@@ -852,10 +843,6 @@ for (var L = 0; L < C.length; L++) {
               
                 <li class="links-of-blogroll-item">
                   <a href="http://blog.csdn.net/csdn_yudong" title="CSDN" target="_blank">CSDN</a>
-                </li>
-              
-                <li class="links-of-blogroll-item">
-                  <a href="https://neveryu.github.io/neveryu" title="个人首页" target="_blank">个人首页</a>
                 </li>
               
                 <li class="links-of-blogroll-item">
@@ -922,7 +909,7 @@ for (var L = 0; L < C.length; L++) {
   <span class="with-love">
     <i class="fa fa-heart"></i>
   </span>
-  <span class="author" itemprop="copyrightHolder">春有白花,秋有数</span>
+  <span class="author" itemprop="copyrightHolder">春有百花,秋有树</span>
 </div>
 
 <div class="powered-by">
