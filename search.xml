@@ -4,9 +4,274 @@
   
     
     <entry>
-      <title><![CDATA[test]]></title>
+      <title><![CDATA[element]]></title>
+      <url>https://309893147.github.io/2019/08/17/element/</url>
+      <content type="html"><![CDATA[<p>element Upload 上传</p>
+<pre><code>     &lt;el-upload
+          class=&quot;upload-demo&quot;
+          ref=&quot;upload&quot;
+          action=&quot;/manager/publicproject/addPictureUrl&quot;
+          :on-preview=&quot;handlePreview&quot;
+          :on-remove=&quot;handleRemove&quot;
+          :auto-upload=&quot;false&quot;
+          :on-success=&quot;updateSuccess&quot;
+          :limit=&quot;1&quot;
+        &gt;
+          &lt;el-button slot=&quot;trigger&quot; size=&quot;small&quot; type=&quot;primary&quot;&gt;选取文件&lt;/el-button&gt;
+          &lt;el-button
+            style=&quot;margin-left: 10px;&quot;
+            size=&quot;small&quot;
+            type=&quot;success&quot;
+            @click=&quot;submitUpload&quot;
+          &gt;上传到服务器&lt;/el-button&gt;
+          &lt;div slot=&quot;tip&quot; class=&quot;el-upload__tip&quot;&gt;只能上传jpg/png文件，且不超过500kb&lt;/div&gt;
+        &lt;/el-upload&gt;
+
+
+updateSuccess(response, file, fileList) {
+  console.log(response);
+  console.log(response.body);
+  this.pictureItem.url = response.body;
+  console.log(file);
+  console.log(fileList);
+},
+submitUpload() {
+  this.$refs.upload.submit();
+},
+handleRemove(file, fileList) {
+  console.log(file, fileList);
+  fileList = [];
+},
+handlePreview(file) {
+  console.log(file);
+},
+</code></pre>]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[v-charts百度地图]]></title>
+      <url>https://309893147.github.io/2019/08/02/v-charts%E7%99%BE%E5%BA%A6%E5%9C%B0%E5%9B%BE/</url>
+      <content type="html"><![CDATA[<p>场景:后台首页数据统计面板中使用地图统计在线机器与故障机器</p>
+<p>安装</p>
+<pre><code>npm i v-charts echarts -S
+</code></pre><p>开始使用</p>
+<pre><code>// main.js
+import Vue from &apos;vue&apos;
+import VCharts from &apos;v-charts&apos;
+import App from &apos;./App.vue&apos;
+
+Vue.use(VCharts)
+</code></pre><p>页面中使用</p>
+<pre><code>import VeBmap from &quot;v-charts/lib/bmap.common&quot;;
+</code></pre><p> script中引进ve-bmap标签,template中使用</p>
+<pre><code>  &lt;ve-bmap
+  :settings=&quot;chartSettings&quot;
+  :after-set-option-once=&quot;afterSet&quot;
+  :series=&quot;chartSeries&quot;
+  :tooltip=&quot;chartTooltip&quot;
+&gt;&lt;/ve-bmap&gt;
+</code></pre>]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[微信支付-售后退款]]></title>
+      <url>https://309893147.github.io/2019/07/31/%E5%BE%AE%E4%BF%A1%E6%94%AF%E4%BB%98-%E5%94%AE%E5%90%8E%E9%80%80%E6%AC%BE/</url>
+      <content type="html"><![CDATA[<p>PostSale 表</p>
+<p>用户Id,订单Id,机器Id,订单,用户备注,机器备注,图片,售后状态</p>
+<pre><code>@OneToOne
+@JoinColumn(name = &quot;orderId&quot;
+,updatable = false
+,insertable = false)
+private StoreOrder order;
+</code></pre><p>通过注解关联订单Id和订单</p>
+<pre><code>private Status  status = Status.CREATED;
+public enum Status{
+    CREATED, //等待商家处理 - 商家处理中
+    CANCELED, //用户取消  - 已取消
+    FINISHED, //商家同意售后  - 已完成
+    REJECTED  //商家驳回售后  -  已完成
+}
+</code></pre><p>枚举类型 enum Status</p>
+<p>继承一个通用的BaseEntity,包含自动生成的表Id,<br>Timestamp类型的时间,通过注解实现正反的序列化</p>
+<pre><code>@Id
+@GeneratedValue(
+    strategy = GenerationType.AUTO
+)
+protected Integer id;
+@CreationTimestamp
+@JsonSerialize(
+    using = TimestampSerializer.class
+)
+@JsonDeserialize(
+    using = TimestampDeserializer.class
+)
+@Column(
+    updatable = false
+)
+protected Timestamp createTime;
+@UpdateTimestamp
+@JsonSerialize(
+    using = TimestampSerializer.class
+)
+@JsonDeserialize(
+    using = TimestampDeserializer.class
+)
+protected Timestamp updateTime;
+</code></pre><p> Controller </p>
+<p> @RequestBody 接受传递过来的json实体对象</p>
+<pre><code>@PostMapping(&quot;/post_sale/refund_order&quot;)
+public API&lt;PostSale&gt; refundOrder(@RequestBody @Valid PostSale postSale){
+    return API.ok(mOrderManageService.refundOrder(postSale));
+}
+</code></pre><p> PostSaleService</p>
+<pre><code>   public PostSale refundOrder(PostSale postSale) {
+    StoreOrder order = orderRepository.findItemById(postSale.getOrderId());
+    mPayService.refundOrder(order.getNo(),order.getPrice(),order.getPayMethod());
+    postSale.setStatus(PostSale.Status.FINISHED);
+    return postSaleRepository.save(postSale);
+}
+</code></pre><p>通过postSale实体类中的订单Id查找出订单数据,进行退款操作,退款成功后更改售后状态</p>
+<p>PayService </p>
+<p>传递订单中的编号,价格,订单支付日志中的支付方式</p>
+<pre><code>public void refundOrder(String no, BigDecimal refundPrice, PayLog.PayMethod payMethod) {
+  getPayService(payMethod).refundOrder(no,refundPrice);
+}
+</code></pre><p>抽出getPayService方法.获得支付类型</p>
+<pre><code>public PayService  getPayService(PayLog.PayMethod payMethod){
+
+    if (PayLog.PayMethod.WECHAT.equals(payMethod)){
+        return mWechatPayService;
+    }
+    if (PayLog.PayMethod.ROYAL_PAY.equals(payMethod)){
+        return mRoyalPayService;
+    }
+    APIError.CUSTOM.set(400,&quot;暂不支持该支付方式&quot;).expose();
+    return null;
+}
+</code></pre><p>WechatPayService</p>
+<p>申请退款</p>
+<pre><code>public void refundOrder(String orderNo,BigDecimal refundPrice) {
+        PayLog log = checkIfCanRefund(orderNo);
+        WxPayRefundRequest refundQueryRequest = new WxPayRefundRequest();
+        refundQueryRequest.setTransactionId(log.getTransactionId());
+        refundQueryRequest.setOutRefundNo(generateRefundId());
+        refundQueryRequest.setRefundFee(transformPrice(refundPrice));
+        refundQueryRequest.setTotalFee(transformPrice(log.getPrice()));
+        refundQueryRequest.setNotifyUrl(String.format(&quot;http://%s/pay/wechat/%srefund&quot;,mBasicConfigService.getConfig().getDomain(),callbackPrefix));
+        try {
+            WxPayRefundResult data = mWxPayService.refund(refundQueryRequest);
+            log.setRefundId(data.getRefundId());
+            log.setRefundPrice(refundPrice);
+            log.setStatus(PayLog.PayStatus.REFUNDING);
+            log.setRefundTransactionId(data.getRefundId());
+            log.setRefundApplyTime(new Timestamp(System.currentTimeMillis()));
+            mPayLogRepository.save(log);
+        } catch (WxPayException e) {
+            mLogger.warning(&quot;refund apply error:&quot;+e.getMessage());
+            APIError.CUSTOM.set(500,&quot;退款失败:&quot;+e.getMessage()).expose();
+        }
+}
+</code></pre><p>PayLog log = checkIfCanRefund(orderNo); 检查是否可以退款</p>
+<pre><code>protected PayLog checkIfCanRefund(String orderNo){
+    PayLog log = getPayLog(orderNo);
+    if (log == null){
+        APIError.CUSTOM.set(404,&quot;订单不存在&quot;).expose();
+    }
+    if (!PayLog.PayStatus.SUCCESS.equals(log.getStatus())){
+        APIError.CUSTOM.set(404,&quot;当前订单不可退款&quot;).expose();
+    }
+    return log;
+
+}
+</code></pre><p> WxPayRefundRequest refundQueryRequest = new WxPayRefundRequest(); </p>
+<p>创建一个微信退款xml实体,满足微信商户申请退款接口中要求的数据 </p>
+<pre><code>&lt;xml&gt;
+&lt;appid&gt;wx2421b1c4370ec43b&lt;/appid&gt;
+&lt;mch_id&gt;10000100&lt;/mch_id&gt;
+    &lt;nonce_str&gt;6cefdb308e1e2e8aabd48cf79e546a02&lt;/nonce_str&gt; 
+   &lt;out_refund_no&gt;1415701182&lt;/out_refund_no&gt;
+   &lt;out_trade_no&gt;1415757673&lt;/out_trade_no&gt;
+   &lt;refund_fee&gt;1&lt;/refund_fee&gt;
+   &lt;total_fee&gt;1&lt;/total_fee&gt;
+   &lt;transaction_id&gt;&lt;/transaction_id&gt;
+   &lt;sign&gt;FE56DD4AA85C0EECA82C35595A69E153&lt;/sign&gt;
+&lt;/xml&gt;
+</code></pre><p>WxPayRefundRequest 导入jar包<br>package com.github.binarywang.wxpay.bean.request;</p>
+<p>refundQueryRequest.setTransactionId(log.getTransactionId());</p>
+<p>通过支付日志获取交易号</p>
+<p>设置商户自己内部的退款单号</p>
+<p> refundQueryRequest.setOutRefundNo(generateRefundId());</p>
+<pre><code>@Override
+public String generateRefundId() {
+    return UUID.randomUUID().toString().replaceAll(&quot;-&quot;,&quot;&quot;);
+}
+</code></pre><p>设置退款结果通知url.<br>   refundQueryRequest.setNotifyUrl(String.format(“<a href="http://%s/pay/wechat/%srefund&quot;,mBasicConfigService.getConfig().getDomain(),callbackPrefix" target="_blank" rel="external">http://%s/pay/wechat/%srefund&quot;,mBasicConfigService.getConfig().getDomain(),callbackPrefix</a>));</p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[my blog]]></title>
+      <url>https://309893147.github.io/2019/07/30/my-blog/</url>
+      <content type="html"><![CDATA[<h1 id="表设计"><a href="#表设计" class="headerlink" title="表设计"></a>表设计</h1><pre><code>@Entity
+@Getter
+@Setter
+public class StoreLog  extends BaseEntity {
+
+//机器id
+private Integer storeId;
+
+//机器状态
+private LogType type;
+
+public enum LogType {
+    RUN,
+    OPERATION
+}
+
+private String code;
+
+private String content;
+
+}
+</code></pre><p>1.与安卓端交互时,根据返回的type,code来判断,硬件机器是在什么情况发生的错误</p>
+]]></content>
+      
+        
+    </entry>
+    
+    <entry>
+      <title><![CDATA[机器日志功能]]></title>
       <url>https://309893147.github.io/2019/07/30/test/</url>
-      <content type="html"></content>
+      <content type="html"><![CDATA[<p>表设计</p>
+<pre><code>@Entity
+@Getter
+@Setter
+public class StoreLog  extends BaseEntity {
+
+//机器id
+private Integer storeId;
+
+//机器状态
+private LogType type;
+
+public enum LogType {
+    RUN,
+    OPERATION
+}
+
+private String code;
+
+private String content;
+
+}
+</code></pre><p>1.与安卓端交互时,根据返回的type,code来判断,硬件机器是在什么情况发生的错误</p>
+]]></content>
       
         
     </entry>
@@ -356,7 +621,7 @@
 <h1 id="Yarn-安装"><a href="#Yarn-安装" class="headerlink" title="Yarn 安装"></a>Yarn 安装</h1><h2 id="windows"><a href="#windows" class="headerlink" title="windows"></a>windows</h2><p>在 Yarn 中文网可以找到 window 下的三种安装方法：</p>
 <p><img src="https://img-blog.csdn.net/20180824120236673?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L2NzZG5feXVkb25n/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="yarn-install"></p>
 <p>不过我觉得这三种方法都不好用，快速好用的安装方法应该还是使用 npm 来安装：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g yarn</span><br></pre></td></tr></table></figure></p>
-<p>关于为什么使用 <code>-g</code>，以及 <code>-g</code> 会带来哪来影响，这个可以看我的这篇文章：<a href="https://neveryu.github.io/2017/04/10/npm/">npm详细介绍</a>，里面详细介绍了为什么要使用 <code>-g</code>，以及 <code>-g</code> 的作用。</p>
+<p>关于为什么使用 <code>-g</code>，以及 <code>-g</code> 会带来哪来影响，这个可以看我的这篇文章：<a href="https://neveryu.github.io/2017/04/10/npm/" target="_blank" rel="external">npm详细介绍</a>，里面详细介绍了为什么要使用 <code>-g</code>，以及 <code>-g</code> 的作用。</p>
 <h2 id="mac"><a href="#mac" class="headerlink" title="mac"></a>mac</h2><h3 id="方式一"><a href="#方式一" class="headerlink" title="方式一"></a>方式一</h3><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">npm install -g yarn</span><br></pre></td></tr></table></figure>
 <p>如果有报： <code>Please try running this command again as root/Administrator.</code>，可能就是权限不足，因此你需要切换到最高权限去执行命令<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">sudo -s</span><br><span class="line">npm install yarn -g</span><br></pre></td></tr></table></figure></p>
 <h3 id="方式二"><a href="#方式二" class="headerlink" title="方式二"></a>方式二</h3><p>使用另一种初始化脚本的方法，可能就会比较简单一些：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">curl -o- -L https://yarnpkg.com/install.sh | bash</span><br></pre></td></tr></table></figure></p>
